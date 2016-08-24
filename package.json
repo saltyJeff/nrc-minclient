@@ -1,0 +1,25 @@
+{
+  "name": "nrc-minclient",
+  "version": "0.1.0",
+  "description": "minimal client for node room chat",
+  "main": "index.js",
+  "dependencies": {
+    "microevent": "^1.0.0",
+    "nodejs-websocket": "^1.6.0",
+    "prompt-sync": "^4.1.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saltyJeff/nrc-minclient.git"
+  },
+  "author": "Jefferson Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/saltyJeff/nrc-minclient/issues"
+  },
+  "homepage": "https://github.com/saltyJeff/nrc-minclient#readme"
+}
