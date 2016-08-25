@@ -44,14 +44,23 @@ chat.bind("nrcerr", function (error, reason) {
 chat.bind("loggedin", function(userdata) {
     user = userdata;
     console.log("\n<<<Welcome "+user.username+">>>\n");
-    view = "groups";
+    view = "menu";
+    rl.on("line", function (line) {
+        if(view == "menu") {
+            mainloop(line.trim());
+        }
+        else if(view == "group") {
+            grouploop(line.trim());
+        }
+    });
+    switchMenu();
+});
+function switchMenu () {
     rl.setPrompt(user.username + ">");
     rl.prompt();
-    rl.on("line", mainloop);
-});
-
+}
 function mainloop(line) {
-    switch(line.trim()) {
+    switch(line) {
         case "create":
             createGroup();
             break;
@@ -70,6 +79,7 @@ function mainloop(line) {
     }
     rl.prompt();
 }
+//handle the "groups" view
 chat.bind("ingroup", function (groupdata) {
     groups.set(groupdata._id, groupdata);
 });
@@ -86,9 +96,35 @@ function selectGroup () {
     var index = parseInt(prompt("Select group number: ")) - 1;
     currentGroup = groups.get(keyArray[index]);
     view = "group";
-    console.log("Switched to group ["+currentGroup.name+"]\n");
+    switchGroup();
 }
 function createGroup () {
     var name = prompt("Enter the name of the new group: ");
     chat.createGroup(name);
+}
+//handle "group" view
+function grouploop (line) {
+    if(line == "//back") {
+        view = "menu";
+        switchMenu();
+        return;
+    }
+    rl.prompt();
+}
+function switchGroup() {
+    rl.setPrompt(currentGroup.name + ">");
+    console.log("Switched to group ["+currentGroup.name+"]\n");
+    console.log("type \"//back\" to go back to main menu");
+}
+function printMsg (msgobj) {
+    rl.output.write('\x1b[2K\r');
+    var fmt = msgobj.sender;
+    if(msgobj.datatype != "text") {
+        fmt += " ("+msgobj.datatype+")";
+    }
+    fmt += "\n";
+    fmt += msgobj.data+"\n";
+    fmt += new Date(parseInt(msgobj.time)).toLocaleString() +"\n";
+    console.log.apply(console, [fmt]);
+    rl._refreshLine();
 }
