@@ -5,13 +5,18 @@ function NRC () {
     this.conn = null;
 }
 MicroEvent.mixin(NRC);
-NRC.prototype.connect = function (url) {
+NRC.prototype.connect = function (url, auth) {
     var theNRC = this;
     theNRC.conn = ws.connect(url);
     theNRC.conn.on("text", function (text) {
         theNRC.switcher(text);
     });
     theNRC.conn.on("connect", function () {
+        var passobj = {
+            "msgtype": "serverpass",
+            "pass": auth
+        };
+        theNRC.conn.sendText(JSON.stringify(passobj));
         theNRC.trigger("connected");
     });
     theNRC.conn.on("close", function (code, reason) {
@@ -59,7 +64,7 @@ NRC.prototype.sendLoginInfo = function (username, password) {
     var loginObj = {
         "msgtype": "login",
         "username": username,
-        "password": password
+        "password": password,
     };
     this.conn.sendText(JSON.stringify(loginObj));
 };

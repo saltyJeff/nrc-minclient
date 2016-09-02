@@ -28,7 +28,8 @@ init();
 
 function init () {
     var url = prompt("Enter NRC server URL ".prompt, "ws://localhost:8001");
-    chat.connect(url);
+    var auth = prompt.hide("Enter server password (if required)");
+    chat.connect(url, auth);
     chat.bind("connected", function () {
         var option;
         do {
@@ -134,6 +135,7 @@ function grouploop (line) {
     else if(line == "//add") {
         var newuser = prompt("Enter the name of the user to add");
         chat.addToGroup(newuser, currentGroup._id);
+        return;
     }
     else if(line == "//leave") {
         chat.removeUser(currentGroup._id);
