@@ -28,8 +28,7 @@ init();
 
 function init () {
     var url = prompt("Enter NRC server URL ".prompt, "ws://localhost:8001");
-    var auth = prompt.hide("Enter server password (if required)");
-    chat.connect(url, auth);
+    chat.connect(url);
     chat.bind("connected", function () {
         var option;
         do {
@@ -40,7 +39,8 @@ function init () {
         if (option.toUpperCase() == "L") {
             chat.sendLoginInfo(username, password);
         } else if (option.toUpperCase() == "R") {
-            chat.registerAccount(username, password);
+            var auth = prompt.hide("Enter server password (if required)");
+            chat.registerAccount(username, password, auth);
         }
     });
 }
@@ -217,4 +217,12 @@ chat.bind("useradded", function (groupid, newuser) {
 chat.bind("userremoved", function (groupid, user) {
     var arr = groups.get(groupid).users;
     arr.splice(arr.indexOf(newuser), 1);
+});
+
+//general stuff
+chat.bind("closed", function(code, reason) {
+    console.log("connection to server lost");
+    console.log("code: "+code);
+    console.log("reason: "+reason);
+    process.exit();
 });

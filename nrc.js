@@ -1,30 +1,21 @@
 var MicroEvent = require("microevent");
 var ws = require("nodejs-websocket");
-//rewritten from original nrc.js
 function NRC () {
     this.conn = null;
 }
 MicroEvent.mixin(NRC);
-NRC.prototype.connect = function (url, auth) {
+NRC.prototype.connect = function (url) {
     var theNRC = this;
     theNRC.conn = ws.connect(url);
     theNRC.conn.on("text", function (text) {
         theNRC.switcher(text);
     });
     theNRC.conn.on("connect", function () {
-        var passobj = {
-            "msgtype": "serverpass",
-            "pass": auth
-        };
-        theNRC.conn.sendText(JSON.stringify(passobj));
         theNRC.trigger("connected");
     });
     theNRC.conn.on("close", function (code, reason) {
-        theNRC.trigger("closed");
+        theNRC.trigger("closed", code, reason);
     });
-    theNRC.conn.on = function (evt) {
-        theNRC.trigger("disconnected", evt);
-    };
 };
 NRC.prototype.switcher = function (text) {
     var data = JSON.parse(text);
@@ -68,11 +59,12 @@ NRC.prototype.sendLoginInfo = function (username, password) {
     };
     this.conn.sendText(JSON.stringify(loginObj));
 };
-NRC.prototype.registerAccount = function(username, password) {
+NRC.prototype.registerAccount = function(username, password, serverpass) {
     var registerObj = {
         "msgtype": "register",
         "username": username,
-        "password": password
+        "password": password,
+        "serverpass": serverpass || undefined
     };
     this.conn.sendText(JSON.stringify(registerObj));
 };
