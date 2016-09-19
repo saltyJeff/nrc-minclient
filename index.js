@@ -133,8 +133,9 @@ function grouploop (line) {
         return;
     }
     else if(line == "//add") {
-        var newuser = prompt("Enter the name of the user to add");
+        var newuser = prompt("Enter the name of the user to add ");
         chat.addToGroup(newuser, currentGroup._id);
+        rl.prompt();
         return;
     }
     else if(line == "//leave") {
