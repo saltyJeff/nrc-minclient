@@ -50,6 +50,9 @@ chat.bind("nrcerr", function (error, reason) {
     if(error == "loginfail" || error == "registerfail") {
         init();
     }
+    else {
+        rl.prompt();
+    }
 });
 chat.bind("loggedin", function(userdata) {
     user = userdata;
@@ -139,7 +142,7 @@ function grouploop (line) {
         return;
     }
     else if(line == "//leave") {
-        chat.removeUser(currentGroup._id);
+        chat.removeUser(currentGroup._id, user.username);
         view = "menu";
         currentGroup = null;
         switchMenu();
@@ -153,6 +156,7 @@ function grouploop (line) {
         rl.output.write('\x1b[2K\r');
         console.log.apply(console, [str.substring(0,str.length - 2)]);
         rl._refreshLine();
+        rl.prompt();
         return;
     }
     chat.sendMsg(currentGroup._id, "text", line);

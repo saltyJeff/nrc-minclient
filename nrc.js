@@ -94,11 +94,11 @@ NRC.prototype.addToGroup = function (newuser, groupid) {
     };
     this.conn.sendText(JSON.stringify(addObj));
 };
-NRC.prototype.removeUser = function (groupid) {
+NRC.prototype.removeUser = function (groupid, olduser) {
     var removeObj = {
         "msgtype": "removeuser",
         "groupid": groupid,
-        "olduser": user.username
+        "olduser": olduser
     };
     this.conn.sendText(JSON.stringify(removeObj));
 };
